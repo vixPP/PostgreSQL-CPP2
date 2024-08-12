@@ -6,8 +6,7 @@ clientManager::clientManager(const std::string& connection) : connection_{ conne
 
 void clientManager::createDatabaseTables() // создание таблицы 
 {
-    try
-    {
+    
         pqxx::work t(connection_);
         t.exec("CREATE TABLE IF NOT EXISTS "  
                   "clients(id SERIAL PRIMARY KEY, "
@@ -21,17 +20,11 @@ void clientManager::createDatabaseTables() // создание таблицы
             "phone TEXT UNIQUE); " );
         t.commit();
         std::cout << "A database structure (tables) created" << std::endl;
-    }
-    catch (const std::exception& ex)
-    {
-        std::cerr << "Exception happened: " << ex.what() << std::endl;
-    }
+    
 }
 
 void clientManager::addClient(const std::string& name, const std::string& surname, const std::string& email)
 {
-    try
-    {
         pqxx::work t(connection_);
         pqxx::result res = t.exec_params("INSERT INTO clients (name, surname, email) " 
                                          "VALUES ($1, $2, $3) "
@@ -44,17 +37,12 @@ void clientManager::addClient(const std::string& name, const std::string& surnam
 
             cout << "Client added with ID: " << client_id << std::endl;
         
-    }
-    catch (const std::exception& ex)
-    {
-        std::cerr << "Exception happened: " << ex.what() << std::endl;
-    }
+
 } 
 
 void clientManager::addPhone(int clientId, const std::string& phone)
 {
-    try 
-    {
+
         pqxx::work t(connection_);
 
         t.exec_params("INSERT INTO phones "
@@ -63,19 +51,12 @@ void clientManager::addPhone(int clientId, const std::string& phone)
         t.commit();
 
         std::cout << "Phone added for client ID: " << clientId << std::endl;
-    }
-
-    catch (const std::exception& e)
-    {
-        cerr << "Ошибка: " << e.what() << endl;
-    }
-    
+  
 }
 
 void clientManager::updateClient(int clientId, int columnChoice, std::string column, std::string newValue, int number_id)
 {
-    try
-    {
+
         pqxx::work t(connection_);
 
         if (column == "phone")
@@ -89,16 +70,11 @@ void clientManager::updateClient(int clientId, int columnChoice, std::string col
         t.commit();
 
         cout << "\n Информация успешно изменена! \n";
-    }
-    catch (const std::exception& e) {
-        cerr << "Ошибка: " << e.what() << endl;
-    }
+
 }
 
 void clientManager::removePhone(int number_id, int clientId)
 {
-    try
-    {
 
         pqxx::work t(connection_);
 
@@ -112,16 +88,11 @@ void clientManager::removePhone(int number_id, int clientId)
         cout << "\n Номер успешно удален!" << endl;
     }
 
-    catch (const std::exception& e) 
-    {
-        cerr << "Ошибка: " << e.what() << endl;
-    }
-}
+
 
 void clientManager::removeClient(int clientId)
 {
-    try
-    {
+
 
         pqxx::work t(connection_);
 
@@ -132,19 +103,13 @@ void clientManager::removeClient(int clientId)
         t.commit();
 
         cout << "Клиент удален!" << endl;
-    }
-
-    catch (const std::exception& e)
-    {
-        cerr << "Ошибка: " << e.what() << endl;
-    }
+    
 }
 
 std::vector<Client> clientManager::findClients(const std::string& name, const std::string& surname, const std::string& email, const std::string& phone, int N) 
 {
     std::vector<Client> clients;
-    try 
-    {
+
         pqxx::work t(connection_);
 
         if (N == 1) 
@@ -193,10 +158,7 @@ std::vector<Client> clientManager::findClients(const std::string& name, const st
         }
 
         t.commit();
-    }
-    catch (const std::exception& ex) {
-        std::cerr << "Exception happened: " << ex.what() << std::endl;
-    }
+    
 
     return clients;
 }
